@@ -30,6 +30,10 @@ const courseSchema = new mongoose.Schema(
       type: Number,
       required: [true, "a course num years must be specified"],
     },
+    numOfTimesVisited: {
+      type: Number,
+      default: 0,
+    },
     category: {
       type: String,
       required: [true, "a university must have a category"],

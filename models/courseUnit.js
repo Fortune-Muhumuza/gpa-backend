@@ -26,6 +26,10 @@ const courseUnitSchema = new mongoose.Schema(
       required: [true, "a university must have a code"], 
       unique: true,
     },
+    numOfTimesVisited: {
+      type: Number,
+      default: 0,
+    },
     year: {
       type: Number,
       required: [true, "a course year must be specified"],
