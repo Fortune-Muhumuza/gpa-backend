@@ -34,10 +34,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    courses_enrolled_to: {
-      type: String,
-      default: null,
-    },
+    courses_enrolled_to: [String],
     createAt: {
       type: Date,
       default: Date.now(),
