@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const universitySchema = new mongoose.Schema(
   {
+    logo: {
+      type: String,
+    },
     name: {
       type: String,
       required: [true, "a university must have a name"],
