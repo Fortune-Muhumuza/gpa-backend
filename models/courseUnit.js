@@ -17,17 +17,19 @@ const courseUnitSchema = new mongoose.Schema(
       max: [5, "Rating must be below 5.0"],
       set: (val) => Math.round(val * 10) / 10,
     },
-    course_id:[ {
-      type: mongoose.Schema.ObjectId,
-      ref: "Course",
-    }],
+    courses_attached_to: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Course",
+      },
+    ],
     ratingsQuantity: {
       type: Number,
       default: 0,
     },
     code: {
       type: String,
-      required: [true, "a university must have a code"], 
+      required: [true, "a university must have a code"],
       unique: true,
     },
     numOfTimesVisited: {
