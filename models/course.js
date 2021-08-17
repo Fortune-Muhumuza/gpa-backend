@@ -36,7 +36,7 @@ const courseSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: [true, "a university must have a category"],
+      required: [true, "a course must have a category"],
     },
     images: [String],
   },

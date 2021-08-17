@@ -6,6 +6,10 @@ const courseUnitSchema = new mongoose.Schema(
       type: String,
       required: [true, "a university must have a name"],
     },
+    category: {
+      type: String,
+      required: [true, "a course unit must have a category"],
+    },
     ratingsAverage: {
       type: Number,
       default: 4.5,
