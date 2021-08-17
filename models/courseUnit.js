@@ -17,10 +17,10 @@ const courseUnitSchema = new mongoose.Schema(
       max: [5, "Rating must be below 5.0"],
       set: (val) => Math.round(val * 10) / 10,
     },
-    course_id: {
+    course_id:[ {
       type: mongoose.Schema.ObjectId,
       ref: "Course",
-    },
+    }],
     ratingsQuantity: {
       type: Number,
       default: 0,
