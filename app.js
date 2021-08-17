@@ -20,7 +20,7 @@ app.options("*", cors());
 app.use(morgan("dev"));
 
 app.use(express.json({ limit: "1584540kb" }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "12609009kb" }));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/universities", universityRouter);
 app.use("/api/v1/courses", courseRouter);
