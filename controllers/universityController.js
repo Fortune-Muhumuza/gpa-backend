@@ -13,6 +13,7 @@ exports.registerUniversity = catchAsync(async (req, res, next) => {
 
 exports.getAllUniversities = catchAsync(async (req, res, next) => {
   const universities = await University.find({});
+  console.log("reached here nigga");
 
   res.status(200).json({
     status: "success",
@@ -71,5 +72,18 @@ exports.getMostPopularUniversities = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     universities,
+  });
+});
+
+exports.getUniversityByName = catchAsync(async (req, res, next) => {
+  // console.log("the query is", req.query);
+
+  const univeristy = await University.findOne({ name: req.query.name });
+  if (!univeristy)
+    return next(new AppError("university with that name not found", 404));
+
+  res.status(200).json({
+    status: "success",
+    univeristy,
   });
 });
