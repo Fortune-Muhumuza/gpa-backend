@@ -1,6 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/error");
 const Course = require("./../models/course");
+const University = require("./../models/university");
 
 exports.registerCourse = catchAsync(async (req, res, next) => {
   const course = await Course.create(req.body);
@@ -61,7 +62,7 @@ exports.updatePopularCount = catchAsync(async (req, res, next) => {
   });
 });
 exports.getMostPopularCourses = catchAsync(async (req, res, next) => {
-  console.log('reached here');
+  console.log("reached here");
 
   const courses = await Course.find({})
     .sort({ numOfTimesVisited: -1 })
@@ -70,5 +71,23 @@ exports.getMostPopularCourses = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     courses,
+  });
+});
+
+exports.getCourseByUniversityName = catchAsync(async (req, res, next) => {
+  const university = await University.findOne({ name: req.query.uni_name });
+  if (!university)
+    return next(new AppError("university with that name not found", 404));
+
+  const course = await Course.findOne({
+    name: req.query.course_name,
+    university_id: university.id,
+  });
+  if (!course)
+    return next(new AppError("course with that name not found", 404));
+
+  res.status(200).json({
+    status: "success",
+    course,
   });
 });

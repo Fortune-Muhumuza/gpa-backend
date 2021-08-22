@@ -33,6 +33,14 @@ exports.signup = catchAsync(async (req, res, next) => {
   const existingUser = await User.findOne({ email: req.body.email });
   if (existingUser) return next(new AppError("Email already in use", 400));
   const newUser = await User.create(req.body);
+  await new Email(
+    newUser,
+    "welcome",
+    "welcome",
+    "message",
+    "www.gpa-elevator.com"
+  ).sendWelcome();
+
   createSendToken(newUser, 201, res);
 });
 
@@ -55,11 +63,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("There is no user with email address.", 404));
   }
 
-
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
-
-
 
   try {
     console.log("user is", user);
@@ -69,17 +74,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     )}/api/v1/users/resetPassword/${resetToken}`;
     const subject = "Reset Password";
     const message = "Request for password reset";
-    const html_message =
-      "<h3>Dear " +
-      user.first_name +
-      ",</h3> <p style='color: #494949;'>You have requested to reset your password <b>" +
-      "</p><h4 style='margin-bottom: 0px; margin-top: 20px;'>please click on this link to reset you password or ignore this email if you didnt request for it </h4><p style='margin-top: 3px; color: #494949;'>" +
-      `<a href="${resetURL}">` +
-      "Click here" +
-      "</a>";
-    ("</p>");
-    await new Email(user.email, subject, message, html_message).sendEmail();
- 
+
+    await new Email(user, subject, message, resetURL).sendPasswordReset();
+
     res.status(200).json({
       status: "success",
       message: "Token sent to email!",
@@ -106,7 +103,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
-
 
   if (!user) {
     return next(new AppError("Token is invalid or has expired", 400));

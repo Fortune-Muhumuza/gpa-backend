@@ -5,7 +5,8 @@ const {
   getAllCourseUnits,
   getCourseUnit,
   updatePopularCount,
-  getMostPopularCourseUnits
+  getMostPopularCourseUnits,
+  getCourseUnitByUniNameAndCourseName,
 } = require("../controllers/courseUnitController");
 
 const router = express.Router();
@@ -16,6 +17,6 @@ router.put("/edit/:id", editCourseUnits);
 router.get("/increaseCount/:id", updatePopularCount);
 router.get("/popular", getMostPopularCourseUnits);
 router.get("/:id", getCourseUnit);
-
+router.get("/", getCourseUnitByUniNameAndCourseName);
 
 module.exports = router;

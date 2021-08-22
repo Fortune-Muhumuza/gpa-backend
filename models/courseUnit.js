@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { default: slugify } = require("slugify");
 
 const courseUnitSchema = new mongoose.Schema(
   {
@@ -59,7 +60,10 @@ const courseUnitSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
+courseUnitSchema.pre("save", function (next) {
+  this.name = slugify(this.name);
+  next();
+});
 const courseUnitModel = mongoose.model("CourseUnit", courseUnitSchema);
 
 module.exports = courseUnitModel;

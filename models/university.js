@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { default: slugify } = require("slugify");
 
 const universitySchema = new mongoose.Schema(
   {
@@ -51,6 +52,11 @@ const universitySchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+universitySchema.pre("save", function (next) {
+  this.name = slugify(this.name);
+  next();
+});
 
 const universityModel = mongoose.model("University", universitySchema);
 
