@@ -64,6 +64,13 @@ courseUnitSchema.pre("save", function (next) {
   this.name = slugify(this.name);
   next();
 });
+courseUnitSchema.pre(/find/, function (next) {
+  this.populate({
+    path: "courses_attached_to",
+    select: "name university code",
+  });
+  next();
+});
 const courseUnitModel = mongoose.model("CourseUnit", courseUnitSchema);
 
 module.exports = courseUnitModel;

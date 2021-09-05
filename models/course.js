@@ -14,7 +14,7 @@ const courseSchema = new mongoose.Schema(
       max: [5, "Rating must be below 5.0"],
       set: (val) => Math.round(val * 10) / 10,
     },
-    university_id: {
+    university: {
       type: mongoose.Schema.ObjectId,
       ref: "University",
     },
@@ -51,6 +51,13 @@ const courseSchema = new mongoose.Schema(
 courseSchema.pre("save", function (next) {
   this.name = slugify(this.name);
   next();
+});
+courseSchema.pre(/find/, function (next) {
+  this.populate({
+    path: "university_id",
+    select: "name code",
+  });
+  next()
 });
 const courseModel = mongoose.model("Course", courseSchema);
 

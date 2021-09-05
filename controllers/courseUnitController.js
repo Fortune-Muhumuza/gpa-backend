@@ -31,7 +31,7 @@ exports.editCourseUnits = catchAsync(async (req, res, next) => {
   );
 
   if (!course_unit) {
-    return next(new AppError("No university found with that id", 404));
+    return next(new AppError("No course unit found with that id", 404));
   }
   res.status(200).json({
     status: "success",
@@ -84,19 +84,23 @@ exports.getCourseUnitByUniNameAndCourseName = catchAsync(
 
     const course = await Course.findOne({
       name: req.query.course_name,
-      university_id: university.id,
+      university: university.id,
     });
     if (!course)
-      return next(new AppError("course with that name not found", 404));
+      return next(new AppError("course  with that name not found", 404));
     const courseUnit = await CourseUnit.findOne({
       name: req.query.course_unit,
       courses_attached_to: course.id,
     });
     if (!courseUnit)
       return next(new AppError("course unit with that name not found", 404));
+
+    courseUnit.uni_name = university.name;
+
     res.status(200).json({
       status: "success",
       courseUnit,
+      uni_name: university.name,
     });
   }
 );
