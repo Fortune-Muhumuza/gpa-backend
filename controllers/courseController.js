@@ -1,6 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/error");
 const Course = require("./../models/course");
+const User = require("./../models/user");
 const University = require("./../models/university");
 
 exports.registerCourse = catchAsync(async (req, res, next) => {
@@ -89,5 +90,37 @@ exports.getCourseByUniversityName = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     course,
+  });
+});
+
+exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
+  const course_id = req.params.id;
+  const course = await Course.findById(course_id);
+  if (!course) return next(new AppError("course not found", 404));
+
+  const users = await User.find({
+    courses_enrolled_to: course_id,
+  });
+  res.status(200).json({
+    status: "success",
+    course: course.name,
+    number_of_students_enrolled: users.length,
+  });
+});
+
+exports.enrollUser = catchAsync(async (req, res, next) => {
+  const course_id = req.params.id;
+  const course = await Course.findById(course_id);
+  if (!course) return next(new AppError("course not found", 404));
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { $push: { courses_enrolled_to: course_id } },
+
+    { new: false, runValidators: false }
+  );
+  res.status(200).json({
+    success: "success",
+    message: "user succsssully enrolled",
   });
 });

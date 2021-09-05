@@ -27,15 +27,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    course_id: {
-      type: String,
-      default: null,
+    courses_enrolled_to: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Course",
+      },
+    ],
+    university: {
+      type: mongoose.Schema.ObjectId,
+      ref: "University",
     },
-    university_id: {
-      type: String,
-      default: null,
-    },
-    courses_enrolled_to: [String],
+    course_units_enrolled_to: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "CourseUnit",
+      },
+    ],
     createAt: {
       type: Date,
       default: Date.now(),
@@ -63,7 +70,14 @@ const userSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
+userSchema.pre(/find/,function(next){
+  this.populate({
+    // path:["course_units_enrolled_to","university","courses_enrolled_to"]
+    path:"course_units_enrolled_to university courses_enrolled_to ",
+    select:"name code"
+  })
+  next();
+})
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
@@ -88,7 +102,7 @@ userSchema.methods.correctPassword = async function (
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
-userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
@@ -101,13 +115,13 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
   // False means NOT changed
   return false;
 };
-userSchema.methods.createPasswordResetToken = function() {
-  const resetToken = crypto.randomBytes(32).toString('hex');
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
 
   this.passwordResetToken = crypto
-    .createHash('sha256')
+    .createHash("sha256")
     .update(resetToken)
-    .digest('hex');
+    .digest("hex");
 
   console.log({ resetToken }, this.passwordResetToken);
 
@@ -118,4 +132,3 @@ userSchema.methods.createPasswordResetToken = function() {
 const userModel = mongoose.model("User", userSchema);
 
 module.exports = userModel;
-

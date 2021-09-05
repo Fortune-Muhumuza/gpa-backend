@@ -3,6 +3,7 @@ const AppError = require("../utils/error");
 const CourseUnit = require("./../models/courseUnit");
 const Course = require("./../models/course");
 const University = require("./../models/university");
+const User = require("./../models/user");
 
 exports.registerCourseUnit = catchAsync(async (req, res, next) => {
   const course_unit = await CourseUnit.create(req.body);
@@ -104,3 +105,34 @@ exports.getCourseUnitByUniNameAndCourseName = catchAsync(
     });
   }
 );
+
+exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
+  const course_unit_id = req.params.id;
+  const course_unit = await CourseUnit.findById(course_unit_id);
+  if (!course_unit) return next(new AppError("course_unit not found", 404));
+  const users = await User.find({
+    course_units_enrolled_to: course_unit_id,
+  });
+  res.status(200).json({
+    status: "success",
+    course_unit: course_unit.name,
+    number_of_students_enrolled: users.length,
+  });
+});
+
+exports.enrollUser = catchAsync(async (req, res, next) => {
+  const course_unit_id = req.params.id;
+  const course_unit = await CourseUnit.findById(course_unit_id);
+  if (!course_unit) return next(new AppError("course unit not found", 404));
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { $push: { course_units_enrolled_to: course_unit_id } },
+
+    { new: false, runValidators: false }
+  );
+  res.status(200).json({
+    success: "success",
+    message: "user succsssully enrolled",
+  });
+});

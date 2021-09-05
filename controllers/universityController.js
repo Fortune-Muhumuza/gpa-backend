@@ -1,6 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/error");
 const University = require("./../models/university");
+const User = require("./../models/user");
 
 exports.registerUniversity = catchAsync(async (req, res, next) => {
   const university = await University.create(req.body);
@@ -85,5 +86,19 @@ exports.getUniversityByName = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     university,
+  });
+});
+
+exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
+  const university_id = req.params.id;
+  const university = await University.findById(university_id);
+  if (!university) return next(new AppError("university not found", 404));
+  const users = await User.find({
+    university: university_id,
+  });
+  res.status(200).json({
+    status: "success",
+    university: university.name,
+    number_of_students_enrolled: users.length,
   });
 });
