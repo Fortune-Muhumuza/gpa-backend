@@ -5,7 +5,7 @@ const courseUnitSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "a university must have a name"],
+      required: [true, "a course unit must have a name"],
     },
     category: {
       type: String,
@@ -30,7 +30,7 @@ const courseUnitSchema = new mongoose.Schema(
     },
     code: {
       type: String,
-      required: [true, "a university must have a code"],
+      required: [true, "a course unit must have a code"],
       unique: true,
     },
     numOfTimesVisited: {
@@ -39,11 +39,11 @@ const courseUnitSchema = new mongoose.Schema(
     },
     year: {
       type: Number,
-      required: [true, "a course year must be specified"],
+      required: [true, "a course unit year must be specified"],
     },
     semester: {
       type: Number,
-      required: [true, "a course semester must be specified"],
+      required: [true, "a course unit semester must be specified"],
     },
 
     images: [String],

@@ -7,6 +7,8 @@ const errorHandler = require("./controllers/errorController");
 const universityRouter = require("./routes/universityRoutes");
 const courseRouter = require("./routes/courseRoutes");
 const courseUnitRouter = require("./routes/courseUnitRoutes");
+const fileRouter = require("./routes/fileRoutes");
+
 const app = express();
 // cors
 app.use(
@@ -25,6 +27,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/universities", universityRouter);
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/courseUnits", courseUnitRouter);
+app.use("/api/v1/files", fileRouter);
 
 app.use("*", (req, res) => {
   res.status(404).json({
