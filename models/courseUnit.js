@@ -67,7 +67,7 @@ courseUnitSchema.pre("save", function (next) {
 courseUnitSchema.pre(/find/, function (next) {
   this.populate({
     path: "courses_attached_to",
-    select: "name university code",
+    select: "name university code logo",
   });
   next();
 });

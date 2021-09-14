@@ -55,7 +55,7 @@ courseSchema.pre("save", function (next) {
 courseSchema.pre(/find/, function (next) {
   this.populate({
     path: "university",
-    select: "name code",
+    select: "name code logo",
   });
   next()
 });

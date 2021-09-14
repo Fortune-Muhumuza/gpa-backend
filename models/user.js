@@ -74,7 +74,7 @@ userSchema.pre(/find/,function(next){
   this.populate({
     // path:["course_units_enrolled_to","university","courses_enrolled_to"]
     path:"course_units_enrolled_to university courses_enrolled_to ",
-    select:"name code"
+    select:"name code id "
   })
   next();
 })
