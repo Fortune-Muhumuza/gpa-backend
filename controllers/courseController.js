@@ -79,7 +79,7 @@ exports.getCourseByUniversityName = catchAsync(async (req, res, next) => {
   const university = await University.findOne({ name: req.query.uni_name });
   if (!university)
     return next(new AppError("university with that name not found", 404));
-console.log("the course is",req.query.uni_name,req.query.course_name)
+  console.log("the course is", req.query.uni_name, req.query.course_name);
   const course = await Course.findOne({
     name: req.query.course_name,
     university: university.id,
@@ -99,12 +99,13 @@ exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
   if (!course) return next(new AppError("course not found", 404));
 
   const users = await User.find({
-    courses_enrolled_to: course_id,
-  });
+    course: course_id,
+  }).select("-course_units_enrolled_to -university -course -password -_id -createAt -image -__v");
   res.status(200).json({
     status: "success",
     course: course.name,
     number_of_students_enrolled: users.length,
+    students: users,
   });
 });
 
@@ -115,7 +116,8 @@ exports.enrollUser = catchAsync(async (req, res, next) => {
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
-    { $push: { courses_enrolled_to: course_id } },
+    // { $push: { courses_enrolled_to: course_id } },
+    { course: course_id },
 
     { new: false, runValidators: false }
   );

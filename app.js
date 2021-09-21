@@ -8,7 +8,7 @@ const universityRouter = require("./routes/universityRoutes");
 const courseRouter = require("./routes/courseRoutes");
 const courseUnitRouter = require("./routes/courseUnitRoutes");
 const fileRouter = require("./routes/fileRoutes");
-
+const compression = require("compression");
 const app = express();
 // cors
 app.use(
@@ -20,7 +20,7 @@ app.all("*", cors());
 app.options("*", cors());
 
 app.use(morgan("dev"));
-
+app.use(compression());
 app.use(express.json({ limit: "1584540kb" }));
 app.use(express.urlencoded({ extended: true, limit: "12609009kb" }));
 app.use("/api/v1/users", userRouter);

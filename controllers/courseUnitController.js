@@ -102,6 +102,7 @@ exports.getCourseUnitByUniNameAndCourseName = catchAsync(
       status: "success",
       courseUnit,
       uni_name: university.name,
+      logo: university.logo,
     });
   }
 );
@@ -112,11 +113,14 @@ exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
   if (!course_unit) return next(new AppError("course_unit not found", 404));
   const users = await User.find({
     course_units_enrolled_to: course_unit_id,
-  });
+  }).select(
+    "-course_units_enrolled_to -university -course -password -_id -createAt -image -__v"
+  );
   res.status(200).json({
     status: "success",
     course_unit: course_unit.name,
     number_of_students_enrolled: users.length,
+    students: users,
   });
 });
 

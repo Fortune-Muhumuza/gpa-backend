@@ -18,6 +18,12 @@ const courseUnitSchema = new mongoose.Schema(
       max: [5, "Rating must be below 5.0"],
       set: (val) => Math.round(val * 10) / 10,
     },
+    no_credit_units: {
+      type: Number,
+      default: 3,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be below 5.0"],
+    },
     courses_attached_to: [
       {
         type: mongoose.Schema.ObjectId,
@@ -67,7 +73,7 @@ courseUnitSchema.pre("save", function (next) {
 courseUnitSchema.pre(/find/, function (next) {
   this.populate({
     path: "courses_attached_to",
-    select: "name university code logo",
+    select: "name university code ",
   });
   next();
 });

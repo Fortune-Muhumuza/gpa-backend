@@ -27,12 +27,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    courses_enrolled_to: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Course",
-      },
-    ],
+    course: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Course",
+    },
+
     university: {
       type: mongoose.Schema.ObjectId,
       ref: "University",
@@ -43,7 +42,7 @@ const userSchema = new mongoose.Schema(
         ref: "CourseUnit",
       },
     ],
-    createAt: {
+    createdAt: {
       type: Date,
       default: Date.now(),
     },
@@ -70,14 +69,14 @@ const userSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-userSchema.pre(/find/,function(next){
+userSchema.pre(/find/, function (next) {
   this.populate({
     // path:["course_units_enrolled_to","university","courses_enrolled_to"]
-    path:"course_units_enrolled_to university courses_enrolled_to ",
-    select:"name code id "
-  })
+    path: "course_units_enrolled_to university course ",
+    select: "name code id ",
+  });
   next();
-})
+});
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
