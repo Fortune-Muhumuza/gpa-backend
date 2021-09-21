@@ -140,3 +140,20 @@ exports.enrollUser = catchAsync(async (req, res, next) => {
     message: "user succsssully enrolled",
   });
 });
+
+exports.unregisterCourseUnit = catchAsync(async (req, res, next) => {
+  const course_unit_id = req.params.id;
+  const course_unit = await CourseUnit.findById(course_unit_id);
+  if (!course_unit) return next(new AppError("course unit not found", 404));
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { $pullAll: { course_units_enrolled_to: [course_unit_id] } },
+
+    { new: false, runValidators: false }
+  );
+  res.status(200).json({
+    success: "success",
+    message: "course_unit deregistered",
+  });
+});

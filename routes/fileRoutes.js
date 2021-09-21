@@ -4,11 +4,12 @@ const {
   saveFile,
   getAllFiles,
   getCourseUnitFiles,
+  handleVideo,
 } = require("./../controllers/fileController");
 const router = express.Router();
 const { protect } = require("./../controllers/userController");
 
-router.post("/upload", protect, uploadFile, saveFile);
+router.post("/upload", protect, uploadFile, handleVideo, saveFile);
 router.get("/getAll", protect, getAllFiles);
 router.get("/:id", protect, getCourseUnitFiles);
 

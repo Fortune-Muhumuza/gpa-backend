@@ -9,6 +9,7 @@ const {
   getCourseUnitByUniNameAndCourseName,
   getUsersEnrolled,
   enrollUser,
+  unregisterCourseUnit,
 } = require("../controllers/courseUnitController");
 const { protect } = require("./../controllers/userController");
 
@@ -22,6 +23,7 @@ router.get("/popular", getMostPopularCourseUnits);
 router.get("/:id", getCourseUnit);
 router.get("/", getCourseUnitByUniNameAndCourseName);
 router.get("/enrolled/:id", getUsersEnrolled);
+router.get("/deregister/:id", protect, unregisterCourseUnit);
 router.get("/enrollUser/:id", protect, enrollUser);
 
 module.exports = router;

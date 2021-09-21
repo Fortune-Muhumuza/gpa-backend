@@ -90,3 +90,23 @@ exports.getCourseUnitFiles = catchAsync(async (req, res, next) => {
     files,
   });
 });
+
+exports.handleVideo = catchAsync(async (req, res, next) => {
+  console.log("the body", req.body); 
+
+  if (!req.body.video_url && !req.body.video_title) return next();
+  // console.log("the body", req);
+
+  const uploadedFile = await File.create({
+    download_url: req.body.video_url,
+    name: req.body.video_title,
+    video_title: req.body.video_title,
+    uploaded_by: req.user._id,
+    file_type: "video",
+    ...req.body,
+  });
+  res.status(200).json({
+    status: "success",
+    uploadedFile,
+  });
+});

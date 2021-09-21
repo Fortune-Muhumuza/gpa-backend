@@ -1,24 +1,22 @@
 const mongoose = require("mongoose");
 
-const fileSchema = new mongoose.Schema(
+const videoSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: [true, "A file must have a name"],
     },
-    file_type: {
+    type: {
       type: String,
       required: [true, "A file must have a type"],
     },
     file_size: {
       type: String,
+      required: [true, "A file must have a size"],
     },
     category: {
       type: String,
       required: [true, "A file must have a category"],
-    },
-    num_of_pages: {
-      type: Number,
     },
     createdAt: {
       type: Date,
@@ -33,15 +31,7 @@ const fileSchema = new mongoose.Schema(
     },
     download_url: {
       type: String,
-    },
-    video_title: {
-      type: String,
-    },
-    video_url: {
-      type: String,
-    },
-    video_duration: {
-      type: Number,
+      required: [true, "A file must have a url"],
     },
     course_unit: {
       type: mongoose.Schema.ObjectId,
@@ -54,13 +44,13 @@ const fileSchema = new mongoose.Schema(
   }
 );
 
-fileSchema.pre(/find/, function (next) {
+videoSchema.pre(/find/, function (next) {
   this.populate({
-    path: "course_unit",
-    select: "name  code courses_attached_to ",
-  });
+    path:"course_unit",
+    select:"name  code courses_attached_to "
+  })
   next();
 });
-const fileModel = mongoose.model("File", fileSchema);
+const videoModel = mongoose.model("Video", videoSchema);
 
-module.exports = fileModel;
+module.exports = videoModel;
