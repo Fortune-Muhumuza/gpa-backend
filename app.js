@@ -21,8 +21,8 @@ app.options("*", cors());
 
 app.use(morgan("dev"));
 app.use(compression());
-app.use(express.json({ limit: "1584540kb" }));
-app.use(express.urlencoded({ extended: true, limit: "12609009kb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/universities", universityRouter);
 app.use("/api/v1/courses", courseRouter);
@@ -31,7 +31,7 @@ app.use("/api/v1/files", fileRouter);
 
 app.use("*", (req, res) => {
   res.status(404).json({
-    status: "error end point not found",
+    status: "error end point not found", 
     message: req.originalUrl,
   });
 });

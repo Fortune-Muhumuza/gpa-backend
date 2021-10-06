@@ -21,6 +21,7 @@ const multer = Multer({
 
 exports.uploadFile = multer.single("file");
 exports.saveFile = catchAsync(async (req, res, next) => {
+  // console.log("the req is",req)
   let file = req.file;
   if (!file) return next(new AppError("please attach a file", 400));
 
