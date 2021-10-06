@@ -32,6 +32,7 @@ exports.saveFile = catchAsync(async (req, res, next) => {
     file_size: Number(file.size) / 1000000,
     uploaded_by: req.user._id,
     file_type: file.mimetype.split("/")[1],
+    category: req.body.category,
     ...req.body,
   });
   res.status(200).json({
@@ -93,7 +94,7 @@ exports.getCourseUnitFiles = catchAsync(async (req, res, next) => {
 });
 
 exports.handleVideo = catchAsync(async (req, res, next) => {
-  console.log("the body", req.body); 
+  console.log("the body", req.body);
 
   if (!req.body.video_url && !req.body.video_title) return next();
   // console.log("the body", req);
