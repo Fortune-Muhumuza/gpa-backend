@@ -138,7 +138,7 @@ exports.enrollUser = catchAsync(async (req, res, next) => {
   res.status(200).json({
     success: "success",
     message: "user succsssully enrolled",
-    user: req.user,
+    user,
   });
 });
 
@@ -156,6 +156,6 @@ exports.unregisterCourseUnit = catchAsync(async (req, res, next) => {
   res.status(200).json({
     success: "success",
     message: "course_unit deregistered",
-    user: req.user,
+    user,
   });
 });
