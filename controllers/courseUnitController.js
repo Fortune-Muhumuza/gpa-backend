@@ -133,7 +133,7 @@ exports.enrollUser = catchAsync(async (req, res, next) => {
     req.user._id,
     { $push: { course_units_enrolled_to: course_unit_id } },
 
-    { new: false, runValidators: false }
+    { new: true, runValidators: false }
   );
   res.status(200).json({
     success: "success",
@@ -151,7 +151,7 @@ exports.unregisterCourseUnit = catchAsync(async (req, res, next) => {
     req.user._id,
     { $pullAll: { course_units_enrolled_to: [course_unit_id] } },
 
-    { new: false, runValidators: false }
+    { new: true, runValidators: false }
   );
   res.status(200).json({
     success: "success",
