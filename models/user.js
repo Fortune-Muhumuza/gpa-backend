@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    current_cgpa25: {
+      type: Number,
+      default: 3,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be below 5.0"],
+    },
     course: {
       type: mongoose.Schema.ObjectId,
       ref: "Course",
@@ -72,7 +78,7 @@ const userSchema = new mongoose.Schema(
 userSchema.pre(/find/, function (next) {
   this.populate({
     // path:["course_units_enrolled_to","university","courses_enrolled_to"]
-    path: "course_units_enrolled_to university course ",
+    path: "course_units_enrolled_to university course category ",
     select: "name code id ",
   });
   next();
