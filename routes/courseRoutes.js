@@ -13,7 +13,7 @@ const {
 const { protect } = require("../controllers/userController");
 
 const router = express.Router();
-console.log("reached here router");
+
 
 router.post("/register", registerCourse);
 router.get("/getAll", getAllCourses);

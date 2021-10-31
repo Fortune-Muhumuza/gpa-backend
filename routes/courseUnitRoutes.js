@@ -10,6 +10,7 @@ const {
   getUsersEnrolled,
   enrollUser,
   unregisterCourseUnit,
+  getCourseUnitByCourseId,
 } = require("../controllers/courseUnitController");
 const { protect } = require("./../controllers/userController");
 
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.post("/register", registerCourseUnit);
 router.get("/getAll", getAllCourseUnits);
+router.get("/getCourseUnitByCourseId", getCourseUnitByCourseId);
 router.put("/edit/:id", editCourseUnits);
 router.get("/increaseCount/:id", updatePopularCount);
 router.get("/popular", getMostPopularCourseUnits);

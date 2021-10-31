@@ -106,6 +106,24 @@ exports.getCourseUnitByUniNameAndCourseName = catchAsync(
     });
   }
 );
+exports.getCourseUnitByCourseId = catchAsync(async (req, res, next) => {
+  const courseId = req.query.course;
+  if (!courseId) return next(new AppError("please supply a course ID", 404));
+  const course = await Course.findById(courseId);
+  if (!course)
+    return next(new AppError("course  with that name not found", 404));
+
+  const courseUnits = await CourseUnit.find({
+    courses_attached_to: courseId,
+  });
+  if (!courseUnits)
+    return next(new AppError("course unit with that name not found", 404));
+
+  res.status(200).json({
+    status: "success",
+    courseUnits,
+  });
+});
 
 exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
   const course_unit_id = req.params.id;

@@ -31,6 +31,9 @@ const fileSchema = new mongoose.Schema(
     academic_year: {
       type: String,
     },
+    custom_name: {
+      type: String,
+    },
     download_url: {
       type: String,
     },
@@ -40,12 +43,23 @@ const fileSchema = new mongoose.Schema(
     video_url: {
       type: String,
     },
+    num_pages: {
+      type: String,
+    },
     video_duration: {
       type: Number,
     },
     course_unit: {
       type: mongoose.Schema.ObjectId,
       ref: "CourseUnit",
+    },
+    numOfTimesVisited: {
+      type: Number,
+      default: 0,
+    },
+    likes: {
+      type: Number,
+      default: 0,
     },
   },
   {
@@ -56,7 +70,7 @@ const fileSchema = new mongoose.Schema(
 
 fileSchema.pre(/find/, function (next) {
   this.populate({
-    path: "course_unit",
+    path: "course_unit  ",
     select: "name  code courses_attached_to ",
   });
   next();

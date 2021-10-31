@@ -51,7 +51,10 @@ const courseUnitSchema = new mongoose.Schema(
       type: Number,
       required: [true, "a course unit semester must be specified"],
     },
-
+    lecturer: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
     images: [String],
     students_enrolled: [
       {

@@ -80,6 +80,16 @@ exports.getAllFiles = catchAsync(async (req, res, next) => {
     files,
   });
 });
+exports.getDocumentDetails = catchAsync(async (req, res, next) => {
+  const documentID = req.params.id;
+
+  if (!documentID) return next(new AppError("document id not supplied", 404));
+  const documentDetails = await File.findById(documentID);
+  res.status(200).json({ 
+    status: "success",
+    documentDetails,
+  });
+});
 
 exports.getCourseUnitFiles = catchAsync(async (req, res, next) => {
   const course_unit_id = req.params.id;
@@ -110,5 +120,49 @@ exports.handleVideo = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     uploadedFile,
+  });
+});
+
+exports.updateViewCount = catchAsync(async (req, res, next) => {
+  const document = await File.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { numOfTimesVisited: 1 } },
+
+    { new: false, runValidators: false }
+  );
+
+  if (!document) {
+    return next(new AppError("No document found with that id", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    document,
+  });
+});
+exports.updateLikeCount = catchAsync(async (req, res, next) => {
+  const document = await File.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { likes: 1 } },
+
+    { new: false, runValidators: false }
+  );
+
+  if (!document) {
+    return next(new AppError("No document found with that id", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    document,
+  });
+});
+
+exports.deleteFile = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const document = await File.findByIdAndDelete(id);
+  if (!document)
+    return next(new AppError("no document with that id found"));
+  res.status(204).json({
+    status: "success",
+    data:null,
   });
 });
