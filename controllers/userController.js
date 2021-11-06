@@ -79,10 +79,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   try {
     console.log("user is", user);
-
-    // const resetURL = `${req.protocol}://${req.get(
-    //   "host"
-    // )}/api/v1/users/resetPassword/${resetToken}`;
+    
     const resetURL = `${req.protocol}://gpaelevator.com/reset-password/${resetToken}`;
     const subject = "Reset Password";
     const message = "Request for password reset";
