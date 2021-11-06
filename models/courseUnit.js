@@ -21,8 +21,8 @@ const courseUnitSchema = new mongoose.Schema(
     no_credit_units: {
       type: Number,
       default: 3,
-      min: [1, "Rating must be above 1.0"],
-      max: [5, "Rating must be below 5.0"],
+      min: [1, "Credit units must be above 1.0"],
+      max: [5, "Credit units must be below 5.0"],
     },
     courses_attached_to: [
       {

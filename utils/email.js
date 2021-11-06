@@ -12,7 +12,7 @@ class Email {
       },
     });
     this.firstName = recipient.first_name;
-    this.from = "admin@gpa-elevator.com";
+    this.from = "admin@gpaelevator.com";
     this.to = recipient.email;
     this.subject = subject;
     this.text = text_message;
@@ -49,12 +49,12 @@ class Email {
   }
   async sendWelcome() {
     console.log("reached jere");
-    await this.send("welcome", "Welcome to GPA-elevator");
+    await this.send("welcome", "Welcome to Gpa Elevator");
   }
   async sendPasswordReset() {
     await this.send(
       "passwordReset",
-      "your password reset token valid for 20 minutes"
+      "Your password reset token valid for 20 minutes"
     );
   }
 }
