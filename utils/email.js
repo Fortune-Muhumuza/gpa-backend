@@ -54,7 +54,7 @@ class Email {
   async sendPasswordReset() {
     await this.send(
       "passwordReset",
-      "Your password reset token valid for 20 minutes"
+      "Reset Password"
     );
   }
 }
