@@ -21,11 +21,11 @@ router.delete(
   restrictTo(["admin", "lecturer"]),
   deleteFile
 );
-router.get("/getAll", protect, getAllFiles);
+router.get("/getAll", getAllFiles);
 router.get("/updateViewCount/:id", protect, updateViewCount);
 router.get("/updateLikeCount/:id", protect, updateLikeCount);
-router.get("/getDocumentDetails/:id", protect, getDocumentDetails);
+router.get("/getDocumentDetails/:id", getDocumentDetails);
 
-router.get("/:id", protect, getCourseUnitFiles);
+router.get("/:id", getCourseUnitFiles);
 
 module.exports = router;
