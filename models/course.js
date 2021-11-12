@@ -25,7 +25,7 @@ const courseSchema = new mongoose.Schema(
     code: {
       type: String,
       required: [true, "a university must have a code"],
-      // unique: true,
+      unique: true,
     },
     num_years: {
       type: Number,

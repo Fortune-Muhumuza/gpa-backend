@@ -37,7 +37,7 @@ const courseUnitSchema = new mongoose.Schema(
     code: {
       type: String,
       required: [true, "a course unit must have a code"],
-      // unique: true,
+      unique: true,
     },
     numOfTimesVisited: {
       type: Number,
