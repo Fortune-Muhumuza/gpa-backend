@@ -25,7 +25,6 @@ const courseSchema = new mongoose.Schema(
     code: {
       type: String,
       required: [true, "a university must have a code"],
-      unique: true,
     },
     num_years: {
       type: Number,
@@ -39,7 +38,16 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: [true, "a course must have a category"],
     },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false
+    },
     images: [String],
+    course_initials: {
+      type: String,
+      required: [true, "a course must have intials"],
+    },
   },
 
   {
@@ -57,7 +65,12 @@ courseSchema.pre(/find/, function (next) {
     path: "university",
     select: "name code",
   });
-  next()
+  next();
+});
+courseSchema.pre(/^find/, function(next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
+  next();
 });
 const courseModel = mongoose.model("Course", courseSchema);
 

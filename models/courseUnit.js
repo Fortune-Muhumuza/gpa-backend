@@ -37,7 +37,11 @@ const courseUnitSchema = new mongoose.Schema(
     code: {
       type: String,
       required: [true, "a course unit must have a code"],
-      unique: true,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false
     },
     numOfTimesVisited: {
       type: Number,
@@ -53,7 +57,6 @@ const courseUnitSchema = new mongoose.Schema(
     },
     lecturer: {
       type: String,
-     
     },
     images: [String],
     students_enrolled: [
@@ -78,6 +81,11 @@ courseUnitSchema.pre(/find/, function (next) {
     path: "courses_attached_to",
     select: "name university code ",
   });
+  next();
+});
+courseUnitSchema.pre(/^find/, function(next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
   next();
 });
 const courseUnitModel = mongoose.model("CourseUnit", courseUnitSchema);

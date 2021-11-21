@@ -100,7 +100,9 @@ exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
 
   const users = await User.find({
     course: course_id,
-  }).select("-course_units_enrolled_to -university -course -password -_id -createAt -image -__v");
+  }).select(
+    "-course_units_enrolled_to -university -course -password -_id -createAt -image -__v"
+  );
   res.status(200).json({
     status: "success",
     course: course.name,
@@ -124,5 +126,37 @@ exports.enrollUser = catchAsync(async (req, res, next) => {
   res.status(200).json({
     success: "success",
     message: "user succsssully enrolled",
+  });
+});
+
+exports.getCoursesByUniversity_id = catchAsync(async (req, res, next) => {
+  const university_id = req.params.university_id;
+  const university = await University.findById(university_id);
+  if (!university)
+    return next(
+      new AppError("university with not found with specified id", 404)
+    );
+  const courses = await Course.find({ university: university_id });
+  res.status(200).json({
+    status: "success",
+    num_of_courses: courses.length,
+    courses,
+  });
+});
+
+exports.deactivateCourse = catchAsync(async (req, res, next) => {
+  const course_id = req.params.id;
+  const course_unit = await Course.findByIdAndUpdate(
+    course_id,
+    {
+      active: false,
+
+    },
+    { new: true, runValidators: false }
+  );
+  if (!course) return next(new AppError("couse  was not found", 404));
+  res.status(200).json({
+    status: "success",
+    message: "successfully deactivated course ",
   });
 });

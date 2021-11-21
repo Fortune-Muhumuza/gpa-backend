@@ -9,8 +9,8 @@ const crypto = require("crypto");
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((el) => {
-    console.log('the object is',el,allowedFields);
-    
+    console.log("the object is", el, allowedFields);
+
     if (!allowedFields.includes(el)) newObj[el] = obj[el];
   });
   return newObj;
@@ -44,13 +44,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const existingUser = await User.findOne({ email: req.body.email });
   if (existingUser) return next(new AppError("Email already in use", 400));
   const newUser = await User.create(req.body);
-  await new Email(
-    newUser,
-    "welcome",
-    "welcome",
-    "message",
-    "www.gpaelevator.com"
-  ).sendWelcome();
+  await new Email(newUser, "welcome", "welcome", "message").sendWelcome();
 
   createSendToken(newUser, 201, res);
 });
@@ -79,12 +73,12 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   try {
     console.log("user is", user);
-    
+
     const resetURL = `${req.protocol}://gpaelevator.com/reset-password/${resetToken}`;
     const subject = "Reset Password";
     const message = "Request for password reset";
 
-    await new Email(user, subject, message, resetURL).sendPasswordReset();
+    await new Email(user, subject, message).sendPasswordReset(resetURL);
 
     res.status(200).json({
       status: "success",
@@ -206,12 +200,34 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // 2) Filtered out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObj(req.body, "email");
 
-  console.log("the filtered body is",filteredBody,req.body)
+  console.log("the filtered body is", filteredBody, req.body);
   // 3) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
   });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: updatedUser,
+    },
+  });
+});
+exports.updateUserRole = catchAsync(async (req, res, next) => {
+  // 3) Update user document
+  const user_id = req.body.user_id;
+  const role = req.body.role;
+  if (!role || !user_id)
+    return next(new AppError("please provide user id and role", 400));
+  const updatedUser = await User.findByIdAndUpdate(
+    user_id,
+    { role: role },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   res.status(200).json({
     status: "success",

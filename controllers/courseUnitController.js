@@ -177,3 +177,20 @@ exports.unregisterCourseUnit = catchAsync(async (req, res, next) => {
     user,
   });
 });
+
+exports.deactivateCourseUnit = catchAsync(async (req, res, next) => {
+  const course_unit_id = req.params.id;
+  const course_unit = await CourseUnit.findByIdAndUpdate(
+    course_unit_id,
+    {
+      active: false,
+    },
+    { new: true, runValidators: false }
+  );
+  if (!course_unit) return next(new AppError("couse unit was not found", 404));
+
+  res.status(200).json({
+    status: "success",
+    message: "successfully deactivated course unit",
+  });
+});

@@ -11,8 +11,9 @@ const {
   enrollUser,
   unregisterCourseUnit,
   getCourseUnitByCourseId,
+  deactivateCourseUnit,
 } = require("../controllers/courseUnitController");
-const { protect } = require("./../controllers/userController");
+const { protect, restrictTo } = require("./../controllers/userController");
 
 const router = express.Router();
 
@@ -27,5 +28,10 @@ router.get("/", getCourseUnitByUniNameAndCourseName);
 router.get("/enrolled/:id", getUsersEnrolled);
 router.get("/deregister/:id", protect, unregisterCourseUnit);
 router.get("/enrollUser/:id", protect, enrollUser);
-
+router.patch(
+  "/deactivateCourseUnit/:id",
+  protect,
+  restrictTo(["admin"]),
+  deactivateCourseUnit
+);
 module.exports = router;

@@ -3,9 +3,20 @@ const File = require("./../models/file");
 const { Storage } = require("@google-cloud/storage");
 const Multer = require("multer");
 const { format } = require("util");
+const Email = require("../utils/email");
+
 const AppError = require("../utils/error");
 const CourseUnit = require("./../models/courseUnit");
+const User = require("./../models/user");
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    console.log("the object is", el, allowedFields);
 
+    if (!allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
 const storage = new Storage({
   projectId: "gpa-elavator",
   keyFilename: "firebase-admin.json",
@@ -38,6 +49,21 @@ exports.saveFile = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     uploadedFile,
+  });
+  const course_unit = await CourseUnit.findById(uploadedFile.course_unit);
+  const users = await User.find({
+    course_units_enrolled_to: req.body.course_unit,
+  });
+  users.forEach(async (user) => {
+    await new Email(
+      user,
+      "document uploaded",
+      "A document has been uploaded under the course unit"
+    ).sendFileUploadNotification(
+      course_unit.name,
+      uploadedFile.academic_year,
+      uploadedFile.custom_name
+    );
   });
 });
 
@@ -85,7 +111,7 @@ exports.getDocumentDetails = catchAsync(async (req, res, next) => {
 
   if (!documentID) return next(new AppError("document id not supplied", 404));
   const documentDetails = await File.findById(documentID);
-  res.status(200).json({ 
+  res.status(200).json({
     status: "success",
     documentDetails,
   });
@@ -120,6 +146,21 @@ exports.handleVideo = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     uploadedFile,
+  });
+  const course_unit = await CourseUnit.findById(uploadedFile.course_unit);
+  const users = await User.find({
+    course_units_enrolled_to: req.body.course_unit,
+  });
+  users.forEach(async (user) => {
+    await new Email(
+      user,
+      "document uploaded",
+      "A document has been uploaded under the course unit"
+    ).sendFileUploadNotification(
+      course_unit.name,
+      uploadedFile.academic_year,
+      uploadedFile.custom_name
+    );
   });
 });
 
@@ -159,10 +200,41 @@ exports.updateLikeCount = catchAsync(async (req, res, next) => {
 exports.deleteFile = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const document = await File.findByIdAndDelete(id);
-  if (!document)
-    return next(new AppError("no document with that id found"));
+  if (!document) return next(new AppError("no document with that id found"));
   res.status(204).json({
     status: "success",
-    data:null,
+    data: null,
+  });
+});
+
+exports.getUserDocuments = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const documents = await File.find({
+    course_unit: { $in: user.course_units_enrolled_to },
+  });
+
+  res.status(200).json({
+    status: "success",
+    num_of_documents: documents.length,
+    documents,
+  });
+});
+
+exports.updateFileDetails = catchAsync(async (req, res, next) => {
+  const filteredBody = filterObj(req.body, [
+    "download_url",
+    "numOfTimesVisited",
+    "likes",
+  ]);
+  const file = await File.findByIdAndUpdate(
+    req.params.file_id,
+    // { $push: { courses_enrolled_to: course_id } },
+    filteredBody,
+
+    { new: true, runValidators: false }
+  );
+  res.status(200).json({
+    status: "success",
+    updated_File: file,
   });
 });

@@ -3,7 +3,7 @@ const pug = require("pug");
 const { convert } = require("html-to-text");
 
 class Email {
-  constructor(recipient, subject, text_message, url) {
+  constructor(recipient, subject, text_message) {
     this.transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -16,15 +16,10 @@ class Email {
     this.to = recipient.email;
     this.subject = subject;
     this.text = text_message;
-    this.url = url;
   }
-  async send(template, subject) {
+  async send(html, subject) {
     //render html based on pug template
-    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
-      firstName: this.firstName,
-      url: this.url,
-      subject,
-    });
+
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -49,13 +44,37 @@ class Email {
   }
   async sendWelcome() {
     console.log("reached jere");
-    await this.send("welcome", "Welcome to Gpa Elevator");
+    const html = pug.renderFile(`${__dirname}/../views/email/welcome.pug`, {
+      firstName: this.firstName,
+      subject: this.subject,
+    });
+    await this.send(html, "Welcome to Gpa Elevator");
   }
-  async sendPasswordReset() {
-    await this.send(
-      "passwordReset",
-      "Reset Password"
+  async sendPasswordReset(url) {
+    const html = pug.renderFile(
+      `${__dirname}/../views/email/passwordReset.pug`,
+      {
+        firstName: this.firstName,
+        subject: this.subject,
+        url,
+      }
     );
+    await this.send(html, "Reset Password");
+  }
+  async sendFileUploadNotification(courseUnit, academic_year, custom_name) {
+    const html = pug.renderFile(`${__dirname}/../views/email/info.pug`, {
+      firstName: this.firstName,
+      courseUnit: courseUnit,
+      academic_year: academic_year,
+      custom_name: custom_name,
+    });
+    console.log(
+      "stuff sent to mail",
+      this.firstName.courseUnit,
+      academic_year,
+      custom_name
+    );
+    await this.send(html, "document Uploaded");
   }
 }
 

@@ -102,3 +102,4 @@ exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
     number_of_students_enrolled: users.length,
   });
 });
+
