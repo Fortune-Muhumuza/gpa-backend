@@ -61,6 +61,17 @@ class Email {
     );
     await this.send(html, "Reset Password");
   }
+  async sendVerifyAccount(url) {
+    const html = pug.renderFile(
+      `${__dirname}/../views/email/verifyAccount.pug`,
+      {
+        firstName: this.firstName,
+        subject: this.subject,
+        url,
+      }
+    );
+    await this.send(html, "Verify Account");
+  }
   async sendFileUploadNotification(courseUnit, academic_year, custom_name) {
     const html = pug.renderFile(`${__dirname}/../views/email/info.pug`, {
       firstName: this.firstName,

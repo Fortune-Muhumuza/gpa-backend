@@ -44,9 +44,32 @@ exports.signup = catchAsync(async (req, res, next) => {
   const existingUser = await User.findOne({ email: req.body.email });
   if (existingUser) return next(new AppError("Email already in use", 400));
   const newUser = await User.create(req.body);
-  await new Email(newUser, "welcome", "welcome", "message").sendWelcome();
+  // await new Email(newUser, "welcome", "welcome", "message").sendWelcome();
+  const verifyToken = newUser.createVerifyAccountToken();
+  await newUser.save({ validateBeforeSave: false });
 
-  createSendToken(newUser, 201, res);
+  try {
+    const verifyURL = `${req.protocol}://gpaelevator.com/verify-account/${verifyToken}`;
+    const subject = "Verify Account";
+    const message = "Verify ownership of the account";
+
+    await new Email(newUser, subject, message).sendVerifyAccount(verifyURL);
+
+    res.status(201).json({
+      status: "success",
+      message: "user successfully created and verification steps sent to email",
+    });
+  } catch (err) {
+    newUser.verifyAccountToken = undefined;
+    newUser.verifyAccountTokenExpires = undefined;
+    await newUser.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError("There was an error sending the email. Try again later!"),
+      500
+    );
+  }
+  // createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -55,10 +78,15 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!email || !password) {
     return next(new AppError("Please provide email and password!", 400));
   }
-  const user = await User.findOne({ email: email }).select("+password");
+  const user = await User.findOne({ email: email }).select(
+    "+password +isVerified"
+  );
 
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError("invalid credentials", 400));
+  console.log("the user", user);
+  if (user.isVerified === false)
+    return next(new AppError("please verify your account and try again", 403));
   createSendToken(user, 200, res);
 });
 
@@ -242,4 +270,58 @@ exports.validate = catchAsync(async (req, res, next) => {
     status: "success",
     message: "token is valid",
   });
+});
+
+exports.RequestAccountVerification = catchAsync(async (req, res, next) => {
+  const email = req.body.email;
+  const user = await User.findOne({ email });
+  if (!user)
+    return next(new AppError("user with that email does not exist", 404));
+
+  const verifyToken = user.createVerifyAccountToken();
+  await user.save({ validateBeforeSave: false });
+
+  try {
+    const verifyURL = `${req.protocol}://gpaelevator.com/verify-account/${verifyToken}`;
+    const subject = "Verify Account";
+    const message = "Verify ownership of the account";
+
+    await new Email(user, subject, message).sendVerifyAccount(verifyURL);
+
+    res.status(200).json({
+      status: "success",
+      message: "verification Token sent to email!",
+    });
+  } catch (err) {
+    user.verifyAccountToken = undefined;
+    user.verifyAccountTokenExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError("There was an error sending the email. Try again later!"),
+      500
+    );
+  }
+});
+
+exports.verifyAccount = catchAsync(async (req, res, next) => {
+  const token = req.params.token;
+  console.log(`the token is ${token}`);
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    verifyAccountToken: hashedToken,
+    verifyAccountTokenExpires: { $gt: Date.now() },
+  }).select("+isVerified");
+  console.log("the usr", user);
+  if (!user) {
+    return next(new AppError("Token is invalid or has expired", 400));
+  }
+  user.isVerified = true;
+  user.verifyAccountToken = undefined;
+  user.verifyAccountTokenExpires = undefined;
+  await user.save();
+  await new Email(user, "welcome", "welcome", "message").sendWelcome();
+
+  createSendToken(user, 200, res);
 });
