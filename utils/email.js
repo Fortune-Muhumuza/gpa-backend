@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const pug = require("pug");
 const { convert } = require("html-to-text");
-
+const AppError = require("./error");
 class Email {
   constructor(recipient, subject, text_message) {
     this.transporter = nodemailer.createTransport({
@@ -79,12 +79,7 @@ class Email {
       academic_year: academic_year,
       custom_name: custom_name,
     });
-    console.log(
-      "stuff sent to mail",
-      this.firstName.courseUnit,
-      academic_year,
-      custom_name
-    );
+
     await this.send(html, "document Uploaded");
   }
 }
