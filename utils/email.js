@@ -28,7 +28,7 @@ class Email {
       html,
     };
     try {
-      await this.transporter.sendMail(mailOptions);
+      await this.transporter.r(mailOptions);
     } catch (err) {
       console.log("error sending email", err);
       new AppError("failed to send email", 403);
@@ -75,12 +75,12 @@ class Email {
   async sendFileUploadNotification(courseUnit, academic_year, custom_name) {
     const html = pug.renderFile(`${__dirname}/../views/email/info.pug`, {
       firstName: this.firstName,
-      courseUnit: courseUnit,
+      courseUnit: courseUnit.replaceAll("-", " "),
       academic_year: academic_year,
       custom_name: custom_name,
     });
 
-    await this.send(html, "document Uploaded");
+    await this.send(html, "New Document Uploaded");
   }
 }
 
