@@ -28,7 +28,7 @@ class Email {
       html,
     };
     try {
-      await this.transporter.r(mailOptions);
+      await this.transporter(mailOptions);
     } catch (err) {
       console.log("error sending email", err);
       new AppError("failed to send email", 403);
