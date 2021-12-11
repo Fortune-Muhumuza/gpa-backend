@@ -4,6 +4,7 @@ const CourseUnit = require("./../models/courseUnit");
 const Course = require("./../models/course");
 const University = require("./../models/university");
 const User = require("./../models/user");
+const Email = require("../utils/email");
 
 exports.registerCourseUnit = catchAsync(async (req, res, next) => {
   const course_unit = await CourseUnit.create(req.body);
@@ -12,6 +13,11 @@ exports.registerCourseUnit = catchAsync(async (req, res, next) => {
     status: "success",
     course_unit,
   });
+  await new Email(
+    { email: "gpanotifications@gmail.com" },
+    "course_unit created",
+    "a new course_unit has been created"
+  ).sendNotification("course_unit", course_unit.name);
 });
 
 exports.getAllCourseUnits = catchAsync(async (req, res, next) => {
@@ -126,7 +132,8 @@ exports.getCourseUnitByCourseId = catchAsync(async (req, res, next) => {
 });
 exports.getCourseUnitByUniversityId = catchAsync(async (req, res, next) => {
   const university_id = req.query.id;
-  if (!university_id) return next(new AppError("please supply a university ID", 404));
+  if (!university_id)
+    return next(new AppError("please supply a university ID", 404));
   const university = await University.findById(university_id);
   if (!university)
     return next(new AppError("university  with that name not found", 404));

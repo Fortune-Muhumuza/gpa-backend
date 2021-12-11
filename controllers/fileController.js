@@ -56,7 +56,7 @@ exports.saveFile = catchAsync(async (req, res, next) => {
   });
 
   users.forEach(async (user) => {
-    const documentURL = `${req.protocol}://gpaelevator.com/${user.university.name}/${user.course.name}/${uploadedFile.id}`;
+    const documentURL = `${req.protocol}://gpaelevator.com/${user.university.name}/${user.course.name}/${course_unit.name}/${uploadedFile.id}`;
 
     await new Email(
       user,
@@ -156,7 +156,7 @@ exports.handleVideo = catchAsync(async (req, res, next) => {
     course_units_enrolled_to: req.body.course_unit,
   });
   users.forEach(async (user) => {
-    const documentURL = `${req.protocol}://gpaelevator.com/${user.university.name}/${user.course.name}/${uploadedFile.id}`;
+    const documentURL = `${req.protocol}://gpaelevator.com/${user.university.name}/${user.course.name}/${course_unit.name}/${uploadedFile.id}`;
 
     await new Email(
       user,

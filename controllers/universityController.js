@@ -1,4 +1,5 @@
 const catchAsync = require("../utils/catchAsync");
+const Email = require("../utils/email");
 const AppError = require("../utils/error");
 const University = require("./../models/university");
 const User = require("./../models/user");
@@ -10,6 +11,11 @@ exports.registerUniversity = catchAsync(async (req, res, next) => {
     status: "success",
     university,
   });
+  await new Email(
+    { email: "gpanotifications@gmail.com" },
+    "university created",
+    "a new university has been created"
+  ).sendNotification("University", university.name);
 });
 
 exports.getAllUniversities = catchAsync(async (req, res, next) => {
@@ -102,4 +108,3 @@ exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
     number_of_students_enrolled: users.length,
   });
 });
-
