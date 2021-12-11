@@ -26,7 +26,7 @@ router.delete(
 router.get("/getAll", getAllFiles);
 router.get("/updateViewCount/:id", protect, updateViewCount);
 router.patch(
-  "/updateVFileDetailsCount/:id",
+  "/updateFileDetails/:id",
   protect,
   restrictTo(["admin"]),
   updateFileDetails
