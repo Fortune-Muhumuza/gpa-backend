@@ -54,7 +54,10 @@ exports.saveFile = catchAsync(async (req, res, next) => {
   const users = await User.find({
     course_units_enrolled_to: req.body.course_unit,
   });
+
   users.forEach(async (user) => {
+    const documentURL = `${req.protocol}://gpaelevator.com/${user.university.name}/${user.course.name}/${uploadedFile.id}`;
+
     await new Email(
       user,
       "document uploaded",
@@ -62,7 +65,8 @@ exports.saveFile = catchAsync(async (req, res, next) => {
     ).sendFileUploadNotification(
       course_unit.name,
       uploadedFile.academic_year,
-      uploadedFile.custom_name
+      uploadedFile.custom_name,
+      documentURL
     );
   });
 });
@@ -152,6 +156,8 @@ exports.handleVideo = catchAsync(async (req, res, next) => {
     course_units_enrolled_to: req.body.course_unit,
   });
   users.forEach(async (user) => {
+    const documentURL = `${req.protocol}://gpaelevator.com/${user.university.name}/${user.course.name}/${uploadedFile.id}`;
+
     await new Email(
       user,
       "document uploaded",
@@ -159,7 +165,8 @@ exports.handleVideo = catchAsync(async (req, res, next) => {
     ).sendFileUploadNotification(
       course_unit.name,
       uploadedFile.academic_year,
-      uploadedFile.custom_name
+      uploadedFile.custom_name,
+      documentURL
     );
   });
 });

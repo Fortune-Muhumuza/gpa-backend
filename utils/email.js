@@ -72,12 +72,18 @@ class Email {
     );
     await this.send(html, "Verify Account");
   }
-  async sendFileUploadNotification(courseUnit, academic_year, custom_name) {
+  async sendFileUploadNotification(
+    courseUnit,
+    academic_year,
+    custom_name,
+    downloadURL
+  ) {
     const html = pug.renderFile(`${__dirname}/../views/email/info.pug`, {
       firstName: this.firstName,
       courseUnit: courseUnit.replaceAll("-", " "),
       academic_year: academic_year,
       custom_name: custom_name,
+      downloadURL
     });
 
     await this.send(html, "New Document Uploaded");

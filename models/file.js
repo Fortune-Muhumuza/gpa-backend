@@ -53,6 +53,10 @@ const fileSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "CourseUnit",
     },
+    course: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Course",
+    },
     numOfTimesVisited: {
       type: Number,
       default: 0,
