@@ -124,6 +124,24 @@ exports.getCourseUnitByCourseId = catchAsync(async (req, res, next) => {
     courseUnits,
   });
 });
+exports.getCourseUnitByUniversityId = catchAsync(async (req, res, next) => {
+  const university_id = req.query.id;
+  if (!university_id) return next(new AppError("please supply a university ID", 404));
+  const university = await University.findById(university_id);
+  if (!university)
+    return next(new AppError("university  with that name not found", 404));
+
+  const courseUnits = await CourseUnit.find({
+    courses_attached_to: university_id,
+  });
+  if (!courseUnits)
+    return next(new AppError("course unit with that name not found", 404));
+
+  res.status(200).json({
+    status: "success",
+    courseUnits,
+  });
+});
 
 exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
   const course_unit_id = req.params.id;

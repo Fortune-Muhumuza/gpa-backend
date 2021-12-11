@@ -25,6 +25,12 @@ router.delete(
 );
 router.get("/getAll", getAllFiles);
 router.get("/updateViewCount/:id", protect, updateViewCount);
+router.patch(
+  "/updateVFileDetailsCount/:id",
+  protect,
+  restrictTo(["admin"]),
+  updateFileDetails
+);
 router.get("/updateLikeCount/:id", protect, updateLikeCount);
 router.get("/getDocumentDetails/:id", getDocumentDetails);
 router.get("/getUserDocuments", protect, getUserDocuments);

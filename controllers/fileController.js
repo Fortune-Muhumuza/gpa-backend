@@ -187,6 +187,25 @@ exports.updateViewCount = catchAsync(async (req, res, next) => {
     document,
   });
 });
+exports.updateFileDetails = catchAsync(async (req, res, next) => {
+  const document = await File.findByIdAndUpdate(
+    req.params.id,
+    {
+      custom_name: req.body.custom_name,
+      academic_year: req.body.academic_year,
+    },
+
+    { new: true, runValidators: ture }
+  );
+
+  if (!document) {
+    return next(new AppError("No document found with that id", 404));
+  }
+  res.status(200).json({
+    status: "success file details successfully updated",
+    document,
+  });
+});
 exports.updateLikeCount = catchAsync(async (req, res, next) => {
   const document = await File.findByIdAndUpdate(
     req.params.id,
