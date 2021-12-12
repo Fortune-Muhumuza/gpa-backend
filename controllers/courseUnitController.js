@@ -164,6 +164,7 @@ exports.getUsersEnrolled = catchAsync(async (req, res, next) => {
     course_unit: course_unit.name,
     number_of_students_enrolled: users.length,
     students: users,
+    lecturer:course_unit.lecturer
   });
 });
 
