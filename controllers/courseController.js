@@ -3,6 +3,7 @@ const AppError = require("../utils/error");
 const Course = require("./../models/course");
 const User = require("./../models/user");
 const University = require("./../models/university");
+const Email = require("../utils/email");
 
 exports.registerCourse = catchAsync(async (req, res, next) => {
   const course = await Course.create(req.body);
@@ -11,6 +12,11 @@ exports.registerCourse = catchAsync(async (req, res, next) => {
     status: "success",
     course,
   });
+  await new Email(
+    { email: "gpanotifications@gmail.com" },
+    "course created",
+    "a new course has been created"
+  ).sendNotification("course", course.name);
 });
 
 exports.getAllCourses = catchAsync(async (req, res, next) => {

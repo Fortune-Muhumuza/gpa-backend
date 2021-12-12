@@ -39,7 +39,7 @@ const courseUnitSchema = new mongoose.Schema(
       required: [true, "a course unit must have a code"],
     },
     active: {
-      type: Boolean,
+      type: Boolean, 
       default: true,
       select: false
     },

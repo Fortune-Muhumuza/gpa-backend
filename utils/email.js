@@ -61,12 +61,22 @@ class Email {
     );
     await this.send(html, "Reset Password");
   }
+  async sendNotification(object, objName) {
+    const html = pug.renderFile(
+      `${__dirname}/../views/email/notification.pug`,
+      {
+        object,
+        objName,
+      }
+    );
+    await this.send(html, "Notification");
+  }
   async sendVerifyAccount(url) {
     const html = pug.renderFile(
       `${__dirname}/../views/email/verifyAccount.pug`,
       {
         firstName: this.firstName,
-        subject: this.subject,
+        subject: this.subject,    
         url,
       }
     );
@@ -83,7 +93,7 @@ class Email {
       courseUnit: courseUnit.replaceAll("-", " "),
       academic_year: academic_year,
       custom_name: custom_name,
-      downloadURL
+      downloadURL,
     });
 
     await this.send(html, "New Document Uploaded");
