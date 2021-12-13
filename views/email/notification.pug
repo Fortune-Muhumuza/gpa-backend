@@ -3,4 +3,4 @@ extends baseEmail
 block content
   p Hi Admin,
   p A new #{object} has been created with these details: 
-  p #{objName}
+  p #{objName.replace(/-/g, ' ')}
